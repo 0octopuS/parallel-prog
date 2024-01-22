@@ -26,11 +26,17 @@ int main(int argc, char *argv[])
     /* TODO: */
     /* Send and receive messages as defined in exercise */
     if (myid == 0) {
-
-        printf("Rank %i received %i\n", myid, receiveBuffer[0]);
+        MPI_Recv(receiveBuffer, size, MPI_INT, 1,2,MPI_COMM_WORLD, &status);
+        MPI_Send(message, size, MPI_INT, 1,1,MPI_COMM_WORLD);
+        int nrecv;
+        MPI_Get_count(&status, MPI_INT, &nrecv);
+        printf("Rank %i received %i elements, first %i\n", myid, nrecv, receiveBuffer[0]);
     } else if (myid == 1) {
-
-        printf("Rank %i received %i\n", myid, receiveBuffer[0]);
+        MPI_Recv(receiveBuffer, size, MPI_INT, 0,1,MPI_COMM_WORLD, &status);
+        MPI_Send(message, size, MPI_INT, 0,2,MPI_COMM_WORLD);
+        int nrecv;
+        MPI_Get_count(&status, MPI_INT, &nrecv);
+        printf("Rank %i received %i elements, first %i\n", myid, nrecv, receiveBuffer[0]);
     }
 
     free(message);
